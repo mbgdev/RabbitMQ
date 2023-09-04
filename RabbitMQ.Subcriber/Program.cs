@@ -8,31 +8,39 @@ namespace RabbitMQ.Subcriber
     {
         static void Main(string[] args)
         {
-            var factory = new ConnectionFactory();
-            factory.Uri = new Uri("amqps://yphmwybv:ai2I1SKf8nZWx2iKpr64yQISh2sEBK_r@goose.rmq2.cloudamqp.com/yphmwybv");
+
+            //Bağlantı Oluşturma
+
+            ConnectionFactory factory = new();
+
+            factory.Uri = new("amqps://dulnzcgr:QsK-Ii77nB-Hfm6n7e_zCH8O2SxGpND0@sparrow.rmq.cloudamqp.com/dulnzcgr");
 
 
-            using var connection = factory.CreateConnection();
+            //Bağlantı Aktifleştirme ve Kanal Açma
 
-            var channel = connection.CreateModel();
+            using IConnection connection = factory.CreateConnection();
 
-            // channel.QueueDeclare("hello-queue", true, false, false);
+            using IModel channel = connection.CreateModel();
 
-            channel.BasicQos(0, 1, false);
 
-            var consumer = new EventingBasicConsumer(channel);
+            //Queue Oluşturma 
 
-            channel.BasicConsume("hello-queue",false,consumer);
+            channel.QueueDeclare(queue: "example-queue", exclusive: false);//consumer ve publisher aynı yapılandırma olmalıdır
 
-            consumer.Received += (object? sender, BasicDeliverEventArgs e) =>
+            //Queue Mesaj Okuma
+            EventingBasicConsumer consumer = new(channel);
+            channel.BasicConsume(queue: "example-queue", autoAck: false, consumer);
+            consumer.Received += (sender, e) =>
             {
-                var message = Encoding.UTF8.GetString(e.Body.ToArray());
-
-                Thread.Sleep(1500);
-                Console.WriteLine("Gelen Mesaj=> "+message+" "+DateTime.Now.ToLongTimeString());
-
-                channel.BasicAck(e.DeliveryTag,false);
+                
+                Console.WriteLine(Encoding.UTF8.GetString(e.Body.Span));
             };
+
+        
+
+
+
+
 
             Console.ReadKey();
         }

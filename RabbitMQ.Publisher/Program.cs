@@ -6,35 +6,41 @@ namespace RabbitMQ.Publisher
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static  void Main(string[] args)
         {
-            var factory= new ConnectionFactory();
-            factory.Uri = new Uri("amqps://yphmwybv:ai2I1SKf8nZWx2iKpr64yQISh2sEBK_r@goose.rmq2.cloudamqp.com/yphmwybv");
+
+            ConnectionFactory factory = new();
+
+            //Bağlantı Oluşturma
+            factory.Uri = new("amqps://dulnzcgr:QsK-Ii77nB-Hfm6n7e_zCH8O2SxGpND0@sparrow.rmq.cloudamqp.com/dulnzcgr");
+
+            //Bağlantı Aktifleştirme ve Kanal Açma
+
+            using IConnection connection = factory.CreateConnection();
+
+            using IModel channel = connection.CreateModel();
+
+            //Queue Oluşturma 
+            channel.QueueDeclare(queue:"example-queue",exclusive:false);
+
+            //Queue Mesaj Gönderme
+            //rabbittmq kuyruğa atılan mesajları byte cinsinden kabul edilir.
 
 
-            using var connection = factory.CreateConnection();
-
-            var channel = connection.CreateModel();
-
-            channel.QueueDeclare("hello-queue",true,false,false);
-
-            Enumerable.Range(1, 50).ToList().ForEach(Range =>
+            for (int i = 0; i < 100; i++)
             {
-                string message = $"Selamun Aleykum{Range} " + DateTime.Now.ToLongTimeString();
+             
+                byte[] message = Encoding.UTF8.GetBytes("Merhaba C# "+i);
+                channel.BasicPublish(exchange: "", routingKey: "example-queue", body: message);
+            }
 
-                var messageBody = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
-
-                Console.WriteLine($"Mesaj Gönderilmiştir. {message} " );
-            });
          
 
+
+
+
+
             Console.ReadKey();
-
-
-
-
 
         }
     }
