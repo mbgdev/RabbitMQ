@@ -25,15 +25,19 @@ namespace RabbitMQ.Subcriber
 
             //Queue Oluşturma 
 
-            channel.QueueDeclare(queue: "example-queue", exclusive: false);//consumer ve publisher aynı yapılandırma olmalıdır
+            channel.QueueDeclare(queue: "example-queue", exclusive: false,durable:true);//consumer ve publisher aynı yapılandırma olmalıdır
 
             //Queue Mesaj Okuma
             EventingBasicConsumer consumer = new(channel);
             channel.BasicConsume(queue: "example-queue", autoAck: false, consumer);
+            channel.BasicQos(0, 1, false);
+
+
             consumer.Received += (sender, e) =>
             {
                 
                 Console.WriteLine(Encoding.UTF8.GetString(e.Body.Span));
+                channel.BasicAck(e.DeliveryTag, false);
             };
 
         

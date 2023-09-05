@@ -6,7 +6,7 @@ namespace RabbitMQ.Publisher
 {
     internal class Program
     {
-        static  void Main(string[] args)
+        static void Main(string[] args)
         {
 
             ConnectionFactory factory = new();
@@ -21,7 +21,8 @@ namespace RabbitMQ.Publisher
             using IModel channel = connection.CreateModel();
 
             //Queue Oluşturma 
-            channel.QueueDeclare(queue:"example-queue",exclusive:false);
+            channel.QueueDeclare(queue: "example-queue", exclusive: false, durable: true);
+            IBasicProperties properties = channel.CreateBasicProperties();
 
             //Queue Mesaj Gönderme
             //rabbittmq kuyruğa atılan mesajları byte cinsinden kabul edilir.
@@ -29,12 +30,12 @@ namespace RabbitMQ.Publisher
 
             for (int i = 0; i < 100; i++)
             {
-             
-                byte[] message = Encoding.UTF8.GetBytes("Merhaba C# "+i);
-                channel.BasicPublish(exchange: "", routingKey: "example-queue", body: message);
+
+                byte[] message = Encoding.UTF8.GetBytes("Merhaba C# " + i);
+                channel.BasicPublish(exchange: "", routingKey: "example-queue", body: message, basicProperties: properties);
             }
 
-         
+
 
 
 
