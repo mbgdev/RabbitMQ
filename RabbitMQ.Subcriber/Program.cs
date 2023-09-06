@@ -17,27 +17,25 @@ namespace RabbitMQ.Subcriber
             using IModel channel = connection.CreateModel();
 
             channel.ExchangeDeclare(
-                exchange: "fanout-exchange-example",
-                type: ExchangeType.Fanout);
+                exchange: "topic-exchange-example",
+                type: ExchangeType.Topic);
 
 
-            Console.Write("Kuyruk adını giriniz: ");
+            Console.Write("Topic formatını Giriniz: ");
+           
+            string topic = Console.ReadLine();
 
-            string _queueName = Console.ReadLine();
-
-            channel.QueueDeclare(
-                queue: _queueName,
-                exclusive: false);
+            string queueName=channel.QueueDeclare().QueueName;
 
             channel.QueueBind(
-                queue: _queueName,
-                exchange: "fanout-exchange-example",
-                routingKey: string.Empty);
+                queue: queueName,
+                exchange: "topic-exchange-example",
+                routingKey: topic);
 
             EventingBasicConsumer consumer = new(channel);
 
             channel.BasicConsume(
-                queue: _queueName,
+                queue: queueName,
                 autoAck: true,
                 consumer: consumer);
 

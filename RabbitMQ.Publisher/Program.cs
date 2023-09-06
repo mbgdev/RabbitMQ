@@ -19,17 +19,20 @@ namespace RabbitMQ.Publisher
 
 
             channel.ExchangeDeclare(
-                exchange: "fanout-exchange-example", 
-                type: ExchangeType.Fanout);
+                exchange: "topic-exchange-example", 
+                type: ExchangeType.Topic);
 
             for (int i = 0; i < 100; i++)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
                 byte[] message =Encoding.UTF8.GetBytes($"Merhaba {i}");
 
+                Console.Write("Topic formatını Giriniz: ");
+                string topic=Console.ReadLine();
+
                 channel.BasicPublish(
-                    exchange: "fanout-exchange-example",
-                    routingKey: string.Empty,
+                    exchange: "topic-exchange-example",
+                    routingKey: topic,
                     body: message);
             }
 
