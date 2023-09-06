@@ -6,7 +6,7 @@ namespace RabbitMQ.Subcriber
 {
     internal class Program
     {
-        static  void Main(string[] args)
+        static void Main(string[] args)
         {
             ConnectionFactory factory = new();
 
@@ -16,22 +16,34 @@ namespace RabbitMQ.Subcriber
 
             using IModel channel = connection.CreateModel();
 
-            channel.ExchangeDeclare(exchange: "direct-exchange-example", type: ExchangeType.Direct);
+            channel.ExchangeDeclare(
+                exchange: "fanout-exchange-example",
+                type: ExchangeType.Fanout);
 
-            string queueName = channel.QueueDeclare().QueueName;
 
-            channel.QueueBind(queue: queueName,
-                exchange: "direct-exchange-example",
-                routingKey: "direct-queue-example");
+            Console.Write("Kuyruk adını giriniz: ");
+
+            string _queueName = Console.ReadLine();
+
+            channel.QueueDeclare(
+                queue: _queueName,
+                exclusive: false);
+
+            channel.QueueBind(
+                queue: _queueName,
+                exchange: "fanout-exchange-example",
+                routingKey: string.Empty);
 
             EventingBasicConsumer consumer = new(channel);
 
-            channel.BasicConsume(queueName,true, consumer);
+            channel.BasicConsume(
+                queue: _queueName,
+                autoAck: true,
+                consumer: consumer);
 
             consumer.Received += (sender, e) =>
             {
-                string message = Encoding.UTF8.GetString(e.Body.Span);
-                Console.WriteLine(message);
+                Console.WriteLine(Encoding.UTF8.GetString(e.Body.Span));
             };
 
             Console.ReadKey();

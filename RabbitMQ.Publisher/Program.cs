@@ -18,22 +18,20 @@ namespace RabbitMQ.Publisher
             using IModel channel = connection.CreateModel();
 
 
-            channel.ExchangeDeclare(exchange: "direct-exchange-example", type: ExchangeType.Direct);
+            channel.ExchangeDeclare(
+                exchange: "fanout-exchange-example", 
+                type: ExchangeType.Fanout);
 
-            while (true)
+            for (int i = 0; i < 100; i++)
             {
-                Console.Write("Mesaj: ");
-                string message = Console.ReadLine();
-                byte[] byteMessage = Encoding.UTF8.GetBytes(message);
+                Thread.Sleep(1000);
+                byte[] message =Encoding.UTF8.GetBytes($"Merhaba {i}");
 
                 channel.BasicPublish(
-                  exchange: "direct-exchange-example",
-                  routingKey: "direct-queue-example",
-                  body: byteMessage);
-
+                    exchange: "fanout-exchange-example",
+                    routingKey: string.Empty,
+                    body: message);
             }
-
-
 
 
             Console.ReadKey();
