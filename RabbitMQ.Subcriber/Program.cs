@@ -6,49 +6,37 @@ namespace RabbitMQ.Subcriber
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static  void Main(string[] args)
         {
-
-            //Bağlantı Oluşturma
-
             ConnectionFactory factory = new();
 
             factory.Uri = new("amqps://dulnzcgr:QsK-Ii77nB-Hfm6n7e_zCH8O2SxGpND0@sparrow.rmq.cloudamqp.com/dulnzcgr");
-
-
-            //Bağlantı Aktifleştirme ve Kanal Açma
 
             using IConnection connection = factory.CreateConnection();
 
             using IModel channel = connection.CreateModel();
 
+            channel.ExchangeDeclare(exchange: "direct-exchange-example", type: ExchangeType.Direct);
 
-            //Queue Oluşturma 
+            string queueName = channel.QueueDeclare().QueueName;
 
-            channel.QueueDeclare(queue: "example-queue", exclusive: false,durable:true);//consumer ve publisher aynı yapılandırma olmalıdır
+            channel.QueueBind(queue: queueName,
+                exchange: "direct-exchange-example",
+                routingKey: "direct-queue-example");
 
-            //Queue Mesaj Okuma
             EventingBasicConsumer consumer = new(channel);
-            channel.BasicConsume(queue: "example-queue", autoAck: false, consumer);
-            channel.BasicQos(0, 1, false);
 
+            channel.BasicConsume(queueName,true, consumer);
 
             consumer.Received += (sender, e) =>
             {
-                
-                Console.WriteLine(Encoding.UTF8.GetString(e.Body.Span));
-                channel.BasicAck(e.DeliveryTag, false);
+                string message = Encoding.UTF8.GetString(e.Body.Span);
+                Console.WriteLine(message);
             };
-
-        
-
-
-
-
 
             Console.ReadKey();
         }
 
-       
+
     }
 }

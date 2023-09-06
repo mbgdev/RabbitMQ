@@ -11,32 +11,27 @@ namespace RabbitMQ.Publisher
 
             ConnectionFactory factory = new();
 
-            //Bağlantı Oluşturma
             factory.Uri = new("amqps://dulnzcgr:QsK-Ii77nB-Hfm6n7e_zCH8O2SxGpND0@sparrow.rmq.cloudamqp.com/dulnzcgr");
-
-            //Bağlantı Aktifleştirme ve Kanal Açma
 
             using IConnection connection = factory.CreateConnection();
 
             using IModel channel = connection.CreateModel();
 
-            //Queue Oluşturma 
-            channel.QueueDeclare(queue: "example-queue", exclusive: false, durable: true);
-            IBasicProperties properties = channel.CreateBasicProperties();
 
-            //Queue Mesaj Gönderme
-            //rabbittmq kuyruğa atılan mesajları byte cinsinden kabul edilir.
+            channel.ExchangeDeclare(exchange: "direct-exchange-example", type: ExchangeType.Direct);
 
-
-            for (int i = 0; i < 100; i++)
+            while (true)
             {
+                Console.Write("Mesaj: ");
+                string message = Console.ReadLine();
+                byte[] byteMessage = Encoding.UTF8.GetBytes(message);
 
-                byte[] message = Encoding.UTF8.GetBytes("Merhaba C# " + i);
-                channel.BasicPublish(exchange: "", routingKey: "example-queue", body: message, basicProperties: properties);
+                channel.BasicPublish(
+                  exchange: "direct-exchange-example",
+                  routingKey: "direct-queue-example",
+                  body: byteMessage);
+
             }
-
-
-
 
 
 
