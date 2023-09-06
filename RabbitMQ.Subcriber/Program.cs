@@ -16,21 +16,25 @@ namespace RabbitMQ.Subcriber
 
             using IModel channel = connection.CreateModel();
 
+
             channel.ExchangeDeclare(
-                exchange: "topic-exchange-example",
-                type: ExchangeType.Topic);
+                exchange: "headers-exchange-example",
+                type: ExchangeType.Headers);
 
 
-            Console.Write("Topic formatını Giriniz: ");
-           
-            string topic = Console.ReadLine();
+            Console.Write("Headers value Giriniz: ");
+            string headersValue = Console.ReadLine();
 
             string queueName=channel.QueueDeclare().QueueName;
 
             channel.QueueBind(
                 queue: queueName,
-                exchange: "topic-exchange-example",
-                routingKey: topic);
+                exchange: "headers-exchange-example",
+                routingKey: string.Empty,
+                new Dictionary<string, object>
+                {
+                    ["Lenovo"]=headersValue
+                });
 
             EventingBasicConsumer consumer = new(channel);
 

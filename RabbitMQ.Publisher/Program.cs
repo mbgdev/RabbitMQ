@@ -19,21 +19,29 @@ namespace RabbitMQ.Publisher
 
 
             channel.ExchangeDeclare(
-                exchange: "topic-exchange-example", 
-                type: ExchangeType.Topic);
+                exchange: "headers-exchange-example", 
+                type: ExchangeType.Headers);
 
             for (int i = 0; i < 100; i++)
             {
                 Thread.Sleep(2000);
                 byte[] message =Encoding.UTF8.GetBytes($"Merhaba {i}");
 
-                Console.Write("Topic formatını Giriniz: ");
-                string topic=Console.ReadLine();
+                Console.Write("Headers value Giriniz: ");
+                string headersValue=Console.ReadLine();
+              
+                IBasicProperties properties=  channel.CreateBasicProperties();
+
+                properties.Headers = new Dictionary<string,object>
+                {
+                    ["Lenovo"] = headersValue
+                };
 
                 channel.BasicPublish(
-                    exchange: "topic-exchange-example",
-                    routingKey: topic,
-                    body: message);
+                    exchange: "headers-exchange-example",
+                    routingKey: string.Empty,
+                    body: message,
+                    basicProperties:properties);
             }
 
 
