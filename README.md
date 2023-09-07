@@ -1,4 +1,14 @@
 # RabbitMQ
+
+# İçindekiler
+
+ [BasicQos](#basicqos)
+- [İkinci madde](#ikinci-madde)
+- [Üçüncü madde](#üçüncü-madde)
+
+
+
+## RabbitMQ Nedir
 **RabbitMQ**, açık kaynaklı bir mesaj sıralama yazılımıdır. Verilerin güvenilir bir şekilde iletilmesini sağlayan bir iletişim aracıdır ve dağıtık sistemler arasında kullanılır.
 
 **RabbitMQ**'yi kullanmalıyız çünkü:
@@ -295,6 +305,7 @@ class Program
     }
 }
 ```
+## BasicQos
 **`channel.BasicQos`**, RabbitMQ'da tüketici işlemcinin bir seferde kaç mesajı işleyeceğini ve işleme alacağını belirlemek için kullanılan bir yöntemdir. Bu yöntem, verimliliği artırmak ve kaynak kullanımını optimize etmek amacıyla kullanılır.
 
 İşte **`channel.BasicQos`** yönteminin bazı önemli parametreleri:
@@ -341,7 +352,8 @@ class Program
 }
 ```
 
-
+## İlk Madde
+Bu ilk maddeye aittir.
 
 
 
