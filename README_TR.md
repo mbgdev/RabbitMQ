@@ -8,7 +8,7 @@
 # İçindekiler
 
 - [RabbitMQ ](#rabbitmq )
-- [Akıllı Kuyruk Mimarisi](#akilli-kuyruk-mimarisi)
+- [Akilli Kuyruk Mimarisi](#akilli-kuyruk-mimarisi)
 - [autoAck](#autoack)
 - [BasicAck](#basicack)
 - [BasicNack](#basicnack)
@@ -39,7 +39,7 @@
 
 7. **Topluluk Desteği**: Geniş bir açık kaynak topluluğu ve dökümantasyon desteği vardır.
 
-## Akıllı Kuyruk Mimarisi
+## Akilli Kuyruk Mimarisi
  **RabbitMQ'nun "Akıllı Kuyruk Mimarisi,"** mesaj sıralama işlemlerini optimize etmek ve veri yönetimini düzenlemek için kullanılan bir yaklaşımdır. Bu yaklaşım, mesajların güvenli bir şekilde iletilmesini, belirli kurallara veya önceliklere göre işlenmesini ve yüksek erişilebilirlik sağlanmasını mümkün kılar. RabbitMQ, dağıtık sistemlerde veri iletişimini düzenlemek ve iş akışlarını yönetmek için kullanılan bu "akıllı kuyruk" mantığı ile oldukça esnek bir çözüm sunar.
 
 
