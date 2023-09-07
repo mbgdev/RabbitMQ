@@ -1,9 +1,9 @@
 # RabbitMQ
 
-# İçindekiler
+# Table of Contents
 
-- [RabbitMQ ](#rabbitmq )
-- [Akıllı Kuyruk Mimarisi](#akilli-kuyruk-mimarisi)
+- [RabbitMQ](#rabbitmq)
+- [Smart Queue Architecture](#smart-queue-architecture)
 - [autoAck](#autoack)
 - [BasicAck](#basicack)
 - [BasicNack](#basicnack)
@@ -12,42 +12,42 @@
 - [Message Durability](#message-durability)
 - [BasicQos](#basicqos)
 
+## RabbitMQ
 
+**RabbitMQ** is an open-source message queuing software. It is a communication tool that ensures reliable delivery of data and is used in distributed systems.
 
+We should use **RabbitMQ** because:
 
-## RabbitMQ 
-**RabbitMQ**, açık kaynaklı bir mesaj sıralama yazılımıdır. Verilerin güvenilir bir şekilde iletilmesini sağlayan bir iletişim aracıdır ve dağıtık sistemler arasında kullanılır.
+1. **Data Communication**: RabbitMQ provides reliable and efficient data communication between application components.
 
-**RabbitMQ**'yi kullanmalıyız çünkü:
+2. **Distributed Systems**: It is useful in scenarios where data transfer is required between distributed systems.
 
-1. **Veri İletişimi**: RabbitMQ, uygulama bileşenleri arasında güvenilir ve verimli bir şekilde veri iletişimi sağlar.
+3. **Message Queuing**: It prevents message loss, ensures messages are processed in a specific order by queuing and processing them.
 
-2. **Dağıtık Sistemler**: Dağıtık sistemler arasında veri aktarımı gerektiren senaryolarda kullanışlıdır.
+4. **Protocol Diversity**: It allows communication between different platforms and languages, supporting various communication protocols.
 
-3. **Mesaj Sıralama**: Mesajları sıralayarak ve işleyerek kaybolmasını önler, belirli bir sıraya göre işlenmelerini sağlar.
+5. **Flexibility**: You can customize and route complex data flows.
 
-4. **Protokol Çeşitliliği**: Farklı platformlar ve diller arasında iletişim kurmanıza olanak tanır, çeşitli iletişim protokollerini destekler.
+6. **High Availability**: It supports backup and load balancing strategies against failures.
 
-5. **Esneklik**: Karmaşık veri akışlarını özelleştirebilir ve yönlendirebilirsiniz.
+7. **Community Support**: It has a large open-source community and documentation support.
 
-6. **Yüksek Erişilebilirlik**: Arızalara karşı yedekleme ve yük dengeleme stratejilerini destekler.
+## Smart Queue Architecture
 
-7. **Topluluk Desteği**: Geniş bir açık kaynak topluluğu ve dökümantasyon desteği vardır.
+**RabbitMQ's "Smart Queue Architecture"** is an approach used to optimize message queuing operations and manage data. This approach enables secure message delivery, processing according to specific rules or priorities, and provides high availability. RabbitMQ offers a flexible solution for managing data communication and workflows in distributed systems using this "smart queue" logic.
 
-## Akıllı Kuyruk Mimarisi
- **RabbitMQ'nun "Akıllı Kuyruk Mimarisi,"** mesaj sıralama işlemlerini optimize etmek ve veri yönetimini düzenlemek için kullanılan bir yaklaşımdır. Bu yaklaşım, mesajların güvenli bir şekilde iletilmesini, belirli kurallara veya önceliklere göre işlenmesini ve yüksek erişilebilirlik sağlanmasını mümkün kılar. RabbitMQ, dağıtık sistemlerde veri iletişimini düzenlemek ve iş akışlarını yönetmek için kullanılan bu "akıllı kuyruk" mantığı ile oldukça esnek bir çözüm sunar.
+**RabbitMQ Round-Robin Dispatching** is a message distribution method used in RabbitMQ. In this method, incoming messages are evenly and sequentially routed to different consumer processors. Each message is distributed to consumer processors in turn.
 
-
-**RabbitMQ Round-Robin Dispatching**, RabbitMQ'da kullanılan bir mesaj dağıtım yöntemidir. Bu yöntemde, gelen mesajlar eşit bir şekilde ve sırayla farklı tüketici işlemcilere yönlendirilir. Yani her mesaj, tüketici işlemcilere sırayla dağıtılır.
-
-**Message Acknowledgment (Mesaj Onaylama)**, RabbitMQ'da bir tüketici işlemcinin bir mesajı aldığını ve başarılı bir şekilde işlediğini bildirmek için kullanılır. Bu işlem, mesajın tekrarlanmasını önlemek ve veri güvenliğini artırmak için önemlidir. Tüketici işlemci mesajı aldığında, onay (acknowledgment) göndererek RabbitMQ'ya mesajın işlendiğini belirtir. Eğer işlem başarısız olursa, mesaj işlenmedi olarak işaretlenebilir ve yeniden işlenebilir. RabbitMQ default olarak tüketiciye gönderdiği mesajı başarılı bir şekilde işlensin veya işlenmesin hemen kuyruktan silinmesi üzere işaretler
+**Message Acknowledgment** is used in RabbitMQ to confirm that a consumer processor has received and successfully processed a message. This process is essential to prevent message reprocessing and enhance data security. When a consumer processor receives a message, it sends an acknowledgment (ack) to indicate that the message has been processed successfully. If the processing fails, the message can be marked as unprocessed and requeued. By default, RabbitMQ immediately removes a message from the queue, whether it was successfully processed or not.
 
 ## autoAck
-`autoAck` (Auto Acknowledgment), RabbitMQ'da bir mesajın tüketici işlemci tarafından alındıktan sonra otomatik olarak onaylandığını veya işlendiğini belirleyen bir parametredir. `autoAck: true` olarak ayarlandığında, tüketici bir mesajı aldığında bu mesaj otomatik olarak onaylanır ve kuyruktan silinir. Bu, mesajın başarılı bir şekilde işlendiği ve tekrarlanmayacağı anlamına gelir. Ancak bu yöntem, hatalı işlemler veya işlem sırasında beklenmeyen sorunlar nedeniyle veri kaybına yol açabilir.
 
-İşte `autoAck: true` parametresinin kullanıldığı bir C# örneği:
+`autoAck` (Auto Acknowledgment) is a parameter in RabbitMQ that determines whether a message is automatically acknowledged or confirmed after being received by a consumer processor. When set to `true`, the message is automatically acknowledged and removed from the queue when a consumer receives it. This means that the message is considered successfully processed and will not be requeued. However, this method can lead to data loss due to erroneous processing or unexpected issues during processing.
+
+Here's an example using `autoAck: true` in C#:
 
 ```csharp
+// C# code with autoAck: true
 using System;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -61,10 +61,10 @@ class Program
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            // Kuyruk oluşturma
+            // Declare a queue
             channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: true);
 
-            // Tüketiciyi tanımlama ve kuyruğu dinlemeye başlama
+            // Define a consumer and start listening to the queue
             var consumer = new EventingBasicConsumer(channel);
 
             consumer.Received += (model, ea) =>
@@ -72,14 +72,14 @@ class Program
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                // Mesaj işleme kodları burada yer alır.
+                // Message processing code goes here.
 
-                // `autoAck: true` olarak ayarlandığında, mesaj otomatik olarak onaylanır ve kuyruktan silinir.
-
+                // When set to autoAck: true, the message is automatically acknowledged and removed from the queue.
+                
                 Console.WriteLine($"Message received and auto-acknowledged: {message}");
             };
 
-            // Tüketiciyi başlatma (`autoAck: true` kullanılıyor)
+            // Start the consumer (using autoAck: true)
             channel.BasicConsume(queue: "message_queue", autoAck: true, consumer: consumer);
 
             Console.WriteLine("Waiting for messages. To exit, press CTRL+C");
@@ -134,16 +134,14 @@ class Program
 }
 ```
 
-## BasicNack
+## BasicAck
+The `channel.BasicAck` method is used to acknowledge that a message has been successfully processed in RabbitMQ. Here are the parameters of this method:
 
-**`channel.BasicNack`**, RabbitMQ'da bir veya birden fazla mesajın işlenemediğini veya reddedildiğini belirten bir yöntemdir. İşte bu yöntemin parametreleri:
+1. `deliveryTag` (ulong): Represents the unique delivery tag of the message, which is automatically assigned by RabbitMQ for each message.
 
-- `deliveryTag` (ulong): Bu, işlenmeyen veya reddedilen mesajın teslimat etiketini temsil eder.
+2. `multiple` (bool): This parameter determines whether it covers multiple messages. When set to `false`, it processes only the message with the specified `deliveryTag`. When set to `true`, it also automatically processes all smaller delivery tags that precede the specified `deliveryTag`.
 
-- `multiple` (bool): Bu parametre, birden fazla mesajı kapsayıp kapsamayacağını belirler. `false` olarak ayarlandığında, yalnızca belirtilen `deliveryTag` değerine sahip mesaj reddedilir veya işlenmez. `true` olarak ayarlandığında, belirtilen `deliveryTag` değerine sahip mesajı reddederken daha küçük olan tüm önceki mesajlar da otomatik olarak reddedilir veya işlenmez.
-- `channel.BasicNack` ile mesajları reddederiz ve gerektiğinde yeniden sıraya alabiliriz `(requeue: true)`.
-
-İşte `BasicNack` yönteminin kullanıldığı bir C# örneği:
+Here is a C# example using the `BasicAck` method:
 
 ```csharp
 using System;
@@ -155,13 +153,12 @@ class Program
 {
     static void Main(string[] args)
     {
-
         var factory = new ConnectionFactory() { HostName = "localhost" };
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            //Message Acknowledgment yapılanması için autoAck=false olmalıdır.
-            channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: false);
+              // Message Acknowledgment setup requires autoAck=false.
+             channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: false);
 
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
@@ -169,10 +166,10 @@ class Program
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                // Mesajı başarıyla işlemediğimizi ve geri almak istediğimizi belirtmek için BasicNack kullanımı
-                channel.BasicNack(deliveryTag: ea.DeliveryTag, multiple: false, requeue: true);
+                // Send acknowledgment (BasicAck) after successfully processing the message
+                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
 
-                Console.WriteLine($"Message rejected and requeued: {message}");
+                Console.WriteLine($"Received and acknowledged: {message}");
             };
 
             channel.BasicConsume(queue: "message_queue", autoAck: false, consumer: consumer);
@@ -183,18 +180,20 @@ class Program
     }
 }
 
+
 ```
 
 ## BasicCancel
 
-**`channel.BasicCancel`**, RabbitMQ'da bir tüketiciyi kuyruktan kaldırmak ve o tüketiciye ait mesajların alımını durdurmak için kullanılır. İşte bu yöntemin bazı önemli parametreleri:
+## BasicCancel
 
-- `consumerTag` (string): Kuyruğu dinleyen tüketiciye ait benzersiz bir etiketi temsil eder. Bu etiket ile tüketiciyi tanımlarsınız.
+The `channel.BasicCancel` method is used in RabbitMQ to remove a consumer from a queue and stop it from receiving messages. Here are some important parameters of this method:
 
-- `noWait` (bool): Bu parametre, işlemin hemen tamamlanmasını veya beklemesini belirler. `true` olarak ayarlandığında, işlem hemen gerçekleştirilir. `false` olarak ayarlandığında, işlem tamamlandığında bir yanıt alırsınız.
+- `consumerTag` (string): Represents a unique tag associated with the consumer listening to the queue. This tag is used to identify the consumer.
 
+- `noWait` (bool): This parameter determines whether the operation should complete immediately or wait. When set to `true`, the operation is executed immediately. When set to `false`, you will receive a response when the operation is completed.
 
-İşte `BasicCancel` yönteminin kullanıldığı bir C# örneği:
+Here is a C# example that demonstrates the usage of the `BasicCancel` method:
 
 ```csharp
 using System;
@@ -209,10 +208,10 @@ class Program
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            // Kuyruk oluşturma
+            // Declare a queue
             channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: false);
 
-            // Tüketiciyi tanımlama ve kuyruğu dinlemeye başlama
+            // Define the consumer and start listening to the queue
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
             {
@@ -221,26 +220,29 @@ class Program
                 Console.WriteLine($"Received: {message}");
             };
 
-            // Tüketiciyi başlatma
+            // Start the consumer
             string consumerTag = channel.BasicConsume(queue: "message_queue", autoAck: true, consumer: consumer);
 
-            // Tüketiciyi iptal etme (kuyruktan kaldırma)
+            // Cancel the consumer (remove from the queue)
             channel.BasicCancel(consumerTag);
 
             Console.WriteLine("Consumer canceled and removed from the queue.");
         }
     }
 }
+
 ```
 ## BasicReject
-**`channel.BasicReject`**, RabbitMQ'da bir mesajı işlemeyi reddetmek ve bu mesajı yeniden sıraya almak için kullanılır. İşte bu yöntemin bazı önemli parametreleri:
 
-- `deliveryTag` (ulong): Bu, reddedilen mesajın teslimat etiketini temsil eder. Teslimat etiketi, her mesaja benzersiz bir şekilde atanır.
+The `channel.BasicReject` method is used in RabbitMQ to reject processing a message and requeue it if necessary. Here are some important parameters of this method:
 
-- `requeue` (bool): Bu parametre, reddedilen mesajın yeniden sıraya alınıp alınmayacağını belirler. `true` olarak ayarlandığında, mesaj yeniden sıraya alınır. `false` olarak ayarlandığında, mesaj kalıcı olarak kuyruktan çıkarılır.
-- `channel.BasicReject` ile bir mesajı işlemeyi reddeder ve isteğe bağlı olarak yeniden sıraya alabilirsiniz (requeue: true).
+- `deliveryTag` (ulong): This represents the delivery tag of the rejected message. The delivery tag is unique for each message.
 
-İşte `BasicReject` yönteminin kullanıldığı bir C# örneği:
+- `requeue` (bool): This parameter determines whether the rejected message should be requeued. When set to `true`, the message is requeued. When set to `false`, the message is permanently removed from the queue.
+
+You can use `channel.BasicReject` to reject and optionally requeue a message (requeue: true).
+
+Here is a C# example that demonstrates the usage of the `BasicReject` method:
 
 ```csharp
 using System;
@@ -252,27 +254,27 @@ class Program
 {
     static void Main(string[] args)
     {
-        var factory = new ConnectionFactory() { HostName = "localhost" };
+        var factory = a ConnectionFactory() { HostName = "localhost" };
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            // Kuyruk oluşturma
+            // Declare a queue
             channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: false);
 
-            // Tüketiciyi tanımlama ve kuyruğu dinlemeye başlama
+            // Define the consumer and start listening to the queue
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
 
-                // Mesajı reddetme ve yeniden sıraya alma
+                // Reject the message and requeue it
                 channel.BasicReject(deliveryTag: ea.DeliveryTag, requeue: true);
 
                 Console.WriteLine($"Message rejected and requeued: {message}");
             };
 
-            // Tüketiciyi başlatma
+            // Start the consumer
             channel.BasicConsume(queue: "message_queue", autoAck: false, consumer: consumer);
 
             Console.WriteLine("Waiting for messages. To exit, press CTRL+C");
@@ -280,13 +282,15 @@ class Program
         }
     }
 }
+
 ```
 ## Message Durability
-**Message Durability** (Mesaj Dayanıklılığı), RabbitMQ'da mesajların kalıcı olmasını ve veri kaybını önlemeyi sağlayan bir özelliktir. Dayanıklı bir mesaj, RabbitMQ tarafından veritabanına veya depolama alanına yazılarak kalıcı hale getirilir. Bu, sunucu veya kuyruk arızaları durumunda mesajların kaybolmasını engeller ve kritik verilerin güvenli bir şekilde iletilmesini sağlar.
 
-`durable: true` ile kuyruğu ve `properties.Persistent = true` ile mesajı dayanıklı hale getirirsiniz.
+**Message Durability** is a feature in RabbitMQ that ensures messages are persistent, preventing data loss. A durable message is made persistent by RabbitMQ, which writes it to a database or storage. This prevents messages from being lost in the event of server or queue failures, ensuring the safe delivery of critical data.
 
-İşte mesaj dayanıklılığını kullanarak bir mesajı dayanıklı olarak işaretlemek için kullanılan bir C# örneği:
+You can make a queue durable with `durable: true` and make a message durable by setting `properties.Persistent = true`.
+
+Here is a C# example demonstrating how to mark a message as durable using message durability:
 
 ```csharp
 using System;
@@ -301,16 +305,16 @@ class Program
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            // Kuyruk oluşturma ve dayanıklı olarak işaretleme
+            // Declare a durable queue
             channel.QueueDeclare(queue: "durable_message_queue", durable: true, exclusive: false, autoAck: false);
 
-            string message = "Bu mesaj dayanıklıdır.";
+            string message = "This message is durable.";
 
             var body = Encoding.UTF8.GetBytes(message);
 
-            // Mesajı dayanıklı olarak gönderme
+            // Send the message as durable
             var properties = channel.CreateBasicProperties();
-            properties.Persistent = true; // Mesajı dayanıklı hale getirme
+            properties.Persistent = true; // Make the message durable
 
             channel.BasicPublish(exchange: "", routingKey: "durable_message_queue", basicProperties: properties, body: body);
 
@@ -318,18 +322,21 @@ class Program
         }
     }
 }
+
 ```
 ## BasicQos
-**`channel.BasicQos`**, RabbitMQ'da tüketici işlemcinin bir seferde kaç mesajı işleyeceğini ve işleme alacağını belirlemek için kullanılan bir yöntemdir. Bu yöntem, verimliliği artırmak ve kaynak kullanımını optimize etmek amacıyla kullanılır.
 
-İşte **`channel.BasicQos`** yönteminin bazı önemli parametreleri:
+**`channel.BasicQos`** is a method used in RabbitMQ to determine how many messages a consumer processor will handle at once and process. This method is used to increase efficiency and optimize resource usage.
 
-- `prefetchSize` (uint): Genellikle 0 olarak ayarlanır ve kullanılmaz.
-- `prefetchCount` (ushort): Tüketici işlemcinin bir seferde kaç mesajı işleyeceğini belirler.
-- `global` (bool): Varsayılan olarak `false` olarak ayarlanır. `true` olarak ayarlandığında, belirtilen ayarlar tüm kanal tüketici işlemcileri için geçerlidir.
-- Bu örnekte `prefetchCount` ile tüketici işlemcinin yalnızca bir mesajı işleyeceği belirtilmiştir.
+Here are some important parameters of **`channel.BasicQos`**:
 
-İşte `channel.BasicQos` yönteminin kullanıldığı bir C# örneği:
+- `prefetchSize` (uint): Typically set to 0 and not used.
+- `prefetchCount` (ushort): Specifies how many messages the consumer processor will handle at once.
+- `global` (bool): By default, set to `false`. When set to `true`, the specified settings apply to all channel consumer processors.
+
+In this example, `prefetchCount` is set to indicate that the consumer processor will handle only one message at a time.
+
+Here is a C# example demonstrating the use of the `channel.BasicQos` method:
 
 ```csharp
 using System;
@@ -344,19 +351,19 @@ class Program
         using (var connection = factory.CreateConnection())
         using (var channel = connection.CreateModel())
         {
-            // Kuyruk oluşturma
+            // Declare a queue
             channel.QueueDeclare(queue: "message_queue", durable: false, exclusive: false, autoAck: true);
 
-            // Tüketiciyi tanımlama ve kanalın BasicQos ayarlarını yapma
+            // Define the consumer and set the BasicQos settings for the channel
             var consumer = new EventingBasicConsumer(channel);
-            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); // Sadece bir mesaj işleyeceğimizi belirtme
+            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false); // Specify that we will handle only one message
 
             consumer.Received += (model, ea) =>
             {
-                // Mesaj işleme kodları burada yer alır.
+                // Message processing code goes here.
             };
 
-            // Tüketiciyi başlatma
+            // Start the consumer
             channel.BasicConsume(queue: "message_queue", autoAck: true, consumer: consumer);
 
             Console.WriteLine("Waiting for messages. To exit, press CTRL+C");
@@ -364,10 +371,9 @@ class Program
         }
     }
 }
+
 ```
 
-## İlk Madde
-Bu ilk maddeye aittir.
 
 
 
