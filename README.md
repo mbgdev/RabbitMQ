@@ -1,4 +1,8 @@
 # RabbitMQ
+## Türkçe Dokümantasyon (Turkish Documentation)
+[Türkçe README](./README_TR.md)
+## English Documentation (İngilizce Dokümantasyon)
+[English README](./README.md)
 
 # Table of Contents
 
