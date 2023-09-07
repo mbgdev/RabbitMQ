@@ -2,13 +2,20 @@
 
 # İçindekiler
 
- [BasicQos](#basicqos)
-- [İkinci madde](#ikinci-madde)
-- [Üçüncü madde](#üçüncü-madde)
+- [RabbitMQ ](#rabbitmq )
+- [Akıllı Kuyruk Mimarisi](#akilli-kuyruk-mimarisi)
+- [autoAck](#autoack)
+- [BasicAck](#basicack)
+- [BasicNack](#basicnack)
+- [BasicCancel](#basiccancel)
+- [BasicReject](#basicreject)
+- [Message Durability](#message-durability)
+- [BasicQos](#basicqos)
 
 
 
-## RabbitMQ Nedir
+
+## RabbitMQ 
 **RabbitMQ**, açık kaynaklı bir mesaj sıralama yazılımıdır. Verilerin güvenilir bir şekilde iletilmesini sağlayan bir iletişim aracıdır ve dağıtık sistemler arasında kullanılır.
 
 **RabbitMQ**'yi kullanmalıyız çünkü:
@@ -27,6 +34,7 @@
 
 7. **Topluluk Desteği**: Geniş bir açık kaynak topluluğu ve dökümantasyon desteği vardır.
 
+## Akıllı Kuyruk Mimarisi
  **RabbitMQ'nun "Akıllı Kuyruk Mimarisi,"** mesaj sıralama işlemlerini optimize etmek ve veri yönetimini düzenlemek için kullanılan bir yaklaşımdır. Bu yaklaşım, mesajların güvenli bir şekilde iletilmesini, belirli kurallara veya önceliklere göre işlenmesini ve yüksek erişilebilirlik sağlanmasını mümkün kılar. RabbitMQ, dağıtık sistemlerde veri iletişimini düzenlemek ve iş akışlarını yönetmek için kullanılan bu "akıllı kuyruk" mantığı ile oldukça esnek bir çözüm sunar.
 
 
@@ -34,6 +42,7 @@
 
 **Message Acknowledgment (Mesaj Onaylama)**, RabbitMQ'da bir tüketici işlemcinin bir mesajı aldığını ve başarılı bir şekilde işlediğini bildirmek için kullanılır. Bu işlem, mesajın tekrarlanmasını önlemek ve veri güvenliğini artırmak için önemlidir. Tüketici işlemci mesajı aldığında, onay (acknowledgment) göndererek RabbitMQ'ya mesajın işlendiğini belirtir. Eğer işlem başarısız olursa, mesaj işlenmedi olarak işaretlenebilir ve yeniden işlenebilir. RabbitMQ default olarak tüketiciye gönderdiği mesajı başarılı bir şekilde işlensin veya işlenmesin hemen kuyruktan silinmesi üzere işaretler
 
+## autoAck
 `autoAck` (Auto Acknowledgment), RabbitMQ'da bir mesajın tüketici işlemci tarafından alındıktan sonra otomatik olarak onaylandığını veya işlendiğini belirleyen bir parametredir. `autoAck: true` olarak ayarlandığında, tüketici bir mesajı aldığında bu mesaj otomatik olarak onaylanır ve kuyruktan silinir. Bu, mesajın başarılı bir şekilde işlendiği ve tekrarlanmayacağı anlamına gelir. Ancak bu yöntem, hatalı işlemler veya işlem sırasında beklenmeyen sorunlar nedeniyle veri kaybına yol açabilir.
 
 İşte `autoAck: true` parametresinin kullanıldığı bir C# örneği:
@@ -79,7 +88,7 @@ class Program
     }
 }
 ```
-
+## BasicAck
 **`channel.BasicAck`** yöntemi, RabbitMQ'da bir mesajın başarıyla işlendiğini onaylamak için kullanılır. İşte bu yöntemin parametreleri:
 
 1. `deliveryTag` (ulong): Mesajın benzersiz teslimat etiketini temsil eder. Bu etiket, her mesaj için RabbitMQ tarafından otomatik olarak atanır.
@@ -125,6 +134,7 @@ class Program
 }
 ```
 
+## BasicNack
 
 **`channel.BasicNack`**, RabbitMQ'da bir veya birden fazla mesajın işlenemediğini veya reddedildiğini belirten bir yöntemdir. İşte bu yöntemin parametreleri:
 
@@ -172,7 +182,10 @@ class Program
         }
     }
 }
+
 ```
+
+## BasicCancel
 
 **`channel.BasicCancel`**, RabbitMQ'da bir tüketiciyi kuyruktan kaldırmak ve o tüketiciye ait mesajların alımını durdurmak için kullanılır. İşte bu yöntemin bazı önemli parametreleri:
 
@@ -219,7 +232,7 @@ class Program
     }
 }
 ```
-
+## BasicReject
 **`channel.BasicReject`**, RabbitMQ'da bir mesajı işlemeyi reddetmek ve bu mesajı yeniden sıraya almak için kullanılır. İşte bu yöntemin bazı önemli parametreleri:
 
 - `deliveryTag` (ulong): Bu, reddedilen mesajın teslimat etiketini temsil eder. Teslimat etiketi, her mesaja benzersiz bir şekilde atanır.
@@ -268,6 +281,7 @@ class Program
     }
 }
 ```
+## Message Durability
 **Message Durability** (Mesaj Dayanıklılığı), RabbitMQ'da mesajların kalıcı olmasını ve veri kaybını önlemeyi sağlayan bir özelliktir. Dayanıklı bir mesaj, RabbitMQ tarafından veritabanına veya depolama alanına yazılarak kalıcı hale getirilir. Bu, sunucu veya kuyruk arızaları durumunda mesajların kaybolmasını engeller ve kritik verilerin güvenli bir şekilde iletilmesini sağlar.
 
 `durable: true` ile kuyruğu ve `properties.Persistent = true` ile mesajı dayanıklı hale getirirsiniz.
