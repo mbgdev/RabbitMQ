@@ -16,6 +16,7 @@
 - [BasicReject](#basicreject)
 - [Message Durability](#message-durability)
 - [BasicQos](#basicqos)
+- [Direct Exchange](#directexchange)
 
 
 
@@ -371,8 +372,82 @@ class Program
 }
 ```
 
+## Direct Exchange
 
+RabbitMQ, mesaj iletişimi için kullanılan bir mesaj aracıdır ve farklı mesaj türlerini işlemek için farklı türdeki değişimler (exchange) sunar. Bunlardan biri de "direct exchange"dir.
 
+Direct exchange, gönderilen mesajların belirli bir "routing key" (yol yönlendirme anahtarı) ile eşleştirildiği ve yalnızca bu eşleşen kuyruklara iletilmesini sağlayan bir türdür. Yani, mesajlarınızın sadece belirli alıcılarına gitmesini istediğinizde direct exchange kullanılır.
+
+Direct exchange kullanırken şunları yapabilirsiniz:
+- Bir veya daha fazla kuyruğu exchange ile bağlayabilirsiniz.
+- Kuyruklar, belirtilen routing key ile eşleşen mesajları alır.
+- Birden fazla routing key ile birden fazla kuyruğa mesaj gönderebilirsiniz.
+
+Özetle, direct exchange, mesajları doğrudan belirli alıcılarına yönlendirmek için kullanılır ve belirli bir routing key ile eşleşen kuyruklara iletilir.
+
+İşte `ExchangeType.Direct` kullanıldığı bir C# örneği:
+```csharp
+using System;
+using RabbitMQ.Client;
+using System.Text;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        var factory = new ConnectionFactory() { HostName = "localhost" };
+        using (var connection = factory.CreateConnection())
+        using (var channel = connection.CreateModel())
+        {
+            // Direct Exchange adı
+            string exchangeName = "direct_exchange";
+
+            // Exchange oluştur
+            channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Direct);
+
+            // Kuyruk adı
+            string queueName = "direct_queue";
+
+            // Kuyruk oluştur
+            channel.QueueDeclare(queue: queueName,
+                                 durable: false,
+                                 exclusive: false,
+                                 autoAck: false,
+                                );
+
+            // Routing anahtarları (binding key'leri)
+            string[] routingKeys = { "error", "warning", "info" };
+
+            // Routing anahtarlarıyla Exchange'i kuyruğa bağla
+            foreach (var routingKey in routingKeys)
+            {
+                channel.QueueBind(queue: queueName,
+                                  exchange: exchangeName,
+                                  routingKey: routingKey);
+            }
+
+            Console.WriteLine("Mesaj göndermek için bir tuşa basın.");
+            Console.ReadKey();
+
+            // Mesaj gönder
+            string message = "Bu bir test mesajıdır.";
+            var body = Encoding.UTF8.GetBytes(message);
+
+            // Örneğin, "error" routing key'i ile mesaj gönder
+            channel.BasicPublish(exchange: exchangeName,
+                                 routingKey: "error",
+                                 basicProperties: null,
+                                 body: body);
+
+            Console.WriteLine(" [x] Gönderilen '{0}':'{1}'", "error", message);
+        }
+
+        Console.WriteLine("Çıkış yapmak için bir tuşa basın.");
+        Console.ReadKey();
+    }
+}
+
+```
 
 
 
