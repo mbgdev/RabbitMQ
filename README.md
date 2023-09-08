@@ -18,7 +18,7 @@
 - [Fanout Exchange](#fanout-exchange)
 - [Topic Exchange](#topic-exchange)
 - [Headers Exchange](#headers-exchange)
-- [Request/Response Tasarimi](#Request-Response-tasarimi)
+- [Request/Response Tasarimi](#Request/Response-tasarimi)
 
 
 
