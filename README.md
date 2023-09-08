@@ -1025,7 +1025,7 @@ Request/Response tasarımı, iki taraflı bir iletişim modelini tanımlar: bir 
 Request/Response tasarımı, dağıtık sistemlerde ve mikroservis mimarilerinde sıkça kullanılır. İstemci ve sunucu arasındaki asenkron iletişim sayesinde sistemler arası bağımlılıkları azaltır ve verimli bir şekilde çalışmalarını sağlar. RabbitMQ gibi mesaj araçları, bu tür iletişim senaryolarını kolayca uygulamak için kullanılır.
 
 
-## RabbitMQ Request/Response Tasarımı C# Örneği
+## Request/Response Tasarimi 
 
 Bu örnek, RabbitMQ kullanarak C# ile Request/Response tasarımını uygular. İstemci, sunucuya bir istek gönderir ve sunucu bu isteği yanıtlar. İstemci ve sunucu arasındaki iletişim RabbitMQ kuyrukları (queues) üzerinden gerçekleşir. Bu tasarım, uzak prosedür çağrıları (RPC) ve benzeri senaryolarda yaygın olarak kullanılır.
 
