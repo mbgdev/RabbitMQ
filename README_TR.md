@@ -16,7 +16,7 @@
 - [BasicReject](#basicreject)
 - [Message Durability](#message-durability)
 - [BasicQos](#basicqos)
-- [Direct Exchange](#directexchange)
+- [Direct Exchange](#direct-exchange)
 
 
 
